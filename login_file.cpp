@@ -3,9 +3,21 @@
 #include <fstream>
 using namespace std;
 bool email_cheak(string mail){
-    for (size_t i = 0 ; i < mail.length() ; i++){
-
+    bool condition1 = false, condition2 = false ;
+    size_t i;
+    for (i = 0 ; i < mail.length() ; i++){
+        if(mail[i] == '@'){
+            condition1 = true;
+            break;
+        }
     }
+    for(;i < mail.length() ; i++){
+        if(mail[i] == '.'){
+            condition2 = true;
+            break;
+        }
+    }
+    return (condition1 & condition2) && mail.length() > 5; 
 }
 class Account
 {
@@ -68,7 +80,7 @@ public:
                 cout << "Try again " << endl;
                 continue;
             }
-            
+
             cout << "Enter password : ";
             cin >> fpassword;
             if (fpassword.length() < 6)
