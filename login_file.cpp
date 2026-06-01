@@ -56,6 +56,11 @@ public:
         file.open("loginid.txt", ios ::out | ios::app);
         file << fusername << "*" << femail_adress << "*" << fpassword << endl;
         file.close();
+        if(file.is_open()){
+            cout << "Failed to register " << endl;
+            cout << "Try again " << endl;
+            return;
+        }
         cout << "Registration Sucessfull";
     }
     void forgt_passerd()
