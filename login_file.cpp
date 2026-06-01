@@ -74,7 +74,7 @@ public:
             }
 
             cout << "Enter email adress : ";
-            cin >> femail_adress ;
+            getline(cin, femail_adress) ;
             if(!email_cheak(femail_adress)){
                 cout << "Incorrect email format " << endl;
                 cout << "Try again " << endl;
@@ -82,19 +82,23 @@ public:
             }
 
             cout << "Enter password : ";
-            cin >> fpassword;
+            getline(cin, fpassword);
             if (fpassword.length() < 6)
             {
                 cout << "Try a longer password" << endl;
                 continue;
             }
+            break;
         }
+
+
         file.open("loginid.txt", ios ::out | ios::app);
         file << fusername << "*" << femail_adress << "*" << fpassword << endl;
+
         file.close();
         if(file.is_open()){
             cout << "Failed to register " << endl;
-            cout << "Try again " << endl;
+            cout << "Try again later ..." << endl;
             return;
         }
         cout << "Registration Sucessfull";
