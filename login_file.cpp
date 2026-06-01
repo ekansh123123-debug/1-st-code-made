@@ -2,6 +2,11 @@
 #include <string>
 #include <fstream>
 using namespace std;
+bool email_cheak(string mail){
+    for (size_t i = 0 ; i < mail.length() ; i++){
+
+    }
+}
 class Account
 {
 private:
@@ -47,12 +52,31 @@ public:
     }
     void registe()
     {
-        cout << "Enter username : ";
-        getline(cin, fusername);
-        cout << "Enter email adress : ";
-        getline(cin, femail_adress);
-        cout << "Enter password : ";
-        getline(cin, fpassword);
+        while(true)
+        {
+            cout << "Enter username : ";
+            getline(cin, fusername);
+            if(fusername.length() < 6) {
+                cout << "Try a longer username" << endl;
+                continue;
+            }
+
+            cout << "Enter email adress : ";
+            cin >> femail_adress ;
+            if(!email_cheak(femail_adress)){
+                cout << "Incorrect email format " << endl;
+                cout << "Try again " << endl;
+                continue;
+            }
+            
+            cout << "Enter password : ";
+            cin >> fpassword;
+            if (fpassword.length() < 6)
+            {
+                cout << "Try a longer password" << endl;
+                continue;
+            }
+        }
         file.open("loginid.txt", ios ::out | ios::app);
         file << fusername << "*" << femail_adress << "*" << fpassword << endl;
         file.close();
@@ -70,10 +94,9 @@ public:
         cout << "Enter email adress : ";
         getline(cin, email_adress);
         file.open("loginid.txt", ios ::in);
-        getline(file, fusername, '*');
-        getline(file, femail_adress, '*');
-        getline(file, fpassword, '\n');
-        while (!file.eof())
+        while(getline(file, fusername, '*') &&
+            getline(file, femail_adress, '*') &&
+            getline(file, fpassword, '\n'))
         {
             if (username == fusername)
             {
