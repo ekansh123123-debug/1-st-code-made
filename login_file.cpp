@@ -2,34 +2,55 @@
 #include <string>
 #include <fstream>
 using namespace std;
-bool email_cheak(string mail){
-    bool condition1 = false, condition2 = false ;
-    size_t i;
-    for (i = 0 ; i < mail.length() ; i++){
-        if(mail[i] == '@'){
+bool email_cheak(const string &mail){
+    bool condition1 = false, condition2 = false;
+    size_t i = 0 ;
+    while(i < mail.length())
+    {
+        if (mail[i] == '@')
+        {
             condition1 = true;
             break;
         }
+        i++;
     }
-    for(;i < mail.length() ; i++){
-        if(mail[i] == '.'){
+    while (i < mail.length())
+    {
+        if (mail[i] == '.')
+        {
             condition2 = true;
             break;
         }
+        i++;
     }
-    return (condition1 & condition2) && mail.length() > 5; 
+    return (condition1 & condition2) && mail.length() > 5;
+}
+bool correct_username(const string &username){
+    fstream file;
+    string temp_username, temp_email_adress, temp_password;
+    file.open("loginid.txt", ios ::in);
+    if (!file.is_open()){
+        return true;
+    }
+    while (getline(file, temp_username, '*') && getline(file, temp_email_adress, '*') && getline(file, temp_password, '\n')){
+        if (username == temp_username){
+            file.close();
+            return false;
+        }
+    }
+    file.close();
+    return username.length() > 4;
 }
 class Account
 {
 private:
-    string password, username, email_adress, fusername, femail_adress, fpassword;
+    string password, username, email_adress, temp_username, temp_email_adress, temp_password;
     fstream file;
 
 public:
-    void login_()
+    void login_function()
     {
-        bool log = true;
-        while (log)
+        while (true)
         {
             cout << "Enter username : ";
             getline(cin, username);
@@ -38,52 +59,56 @@ public:
             cout << "Enter password : ";
             getline(cin, password);
             file.open("loginid.txt", ios ::in);
-            if(!file.is_open()) {
+            if (!file.is_open())
+            {
                 cout << "Could not open the file" << endl;
                 return;
             }
-            while (getline(file, fusername, '*') && getline(file, femail_adress, '*') && getline(file, fpassword, '\n'))
+            while (getline(file, temp_username, '*') && getline(file, temp_email_adress, '*') && getline(file, temp_password, '\n'))
             {
-                if (fusername != username)
+                if (temp_username != username)
                     continue;
-                else if (femail_adress != email_adress || fpassword != password)
+                else if (temp_email_adress != email_adress || temp_password != password)
                     break;
-                else {
+                else
+                {
                     cout << "Correct credentials" << endl;
-                    log = false;
-                    break;
+                    cout << "loging in ..." << endl;
+                    file.close();
+                    // fuction of login
+                    return;
                 }
             }
             cout << "Incorrect credentials" << endl;
             cout << "Try again" << endl;
             file.close();
-            }
-        cout << "loging in ..." << endl;
-        file.close();
-        // fuction of login
+        }
     }
-    void registe()
+    void registe_function()
     {
-        while(true)
+        while (true)
         {
             cout << "Enter username : ";
-            getline(cin, fusername);
-            if(fusername.length() < 6) {
-                cout << "Try a longer username" << endl;
+            getline(cin, temp_username);
+            if (!correct_username(username))
+            {
+                cout << "This name is already taken or incorrect length" << endl;
+                cout << "Please try another username " << endl;
                 continue;
             }
 
             cout << "Enter email adress : ";
-            getline(cin, femail_adress) ;
-            if(!email_cheak(femail_adress)){
+            getline(cin, temp_email_adress);
+            if (!email_cheak(temp_email_adress))
+            {
                 cout << "Incorrect email format " << endl;
                 cout << "Try again " << endl;
                 continue;
             }
 
             cout << "Enter password : ";
-            getline(cin, fpassword);
-            if (fpassword.length() < 6)
+            getline(cin, temp_password);
+            if (temp_password.length() < 6)
             {
                 cout << "Try a longer password" << endl;
                 continue;
@@ -91,34 +116,36 @@ public:
             break;
         }
 
-
         file.open("loginid.txt", ios ::out | ios::app);
-        file << fusername << "*" << femail_adress << "*" << fpassword << endl;
+        file << temp_username << "*" << temp_email_adress << "*" << temp_password << endl;
 
         file.close();
-        if(file.is_open()){
+
+        if (file.is_open())
+        {
             cout << "Failed to register " << endl;
             cout << "Try again later ..." << endl;
             return;
         }
+
         cout << "Registration Sucessfull";
     }
-    void forgt_passerd()
+    void forgot_password()
     {
         cout << "Enter username : ";
         getline(cin, username);
         cout << "Enter email adress : ";
         getline(cin, email_adress);
         file.open("loginid.txt", ios ::in);
-        while(getline(file, fusername, '*') &&
-            getline(file, femail_adress, '*') &&
-            getline(file, fpassword, '\n'))
+        while (getline(file, temp_username, '*') &&
+               getline(file, temp_email_adress, '*') &&
+               getline(file, temp_password, '\n'))
         {
-            if (username == fusername)
+            if (username == temp_username)
             {
-                if (femail_adress == email_adress)
+                if (temp_email_adress == email_adress)
                 {
-                    cout << "Password is : " << fpassword;
+                    cout << "Password is : " << temp_password;
                     break;
                 }
                 else
@@ -129,9 +156,9 @@ public:
             }
             else
             {
-                getline(file, fusername, '*');
-                getline(file, femail_adress, '*');
-                getline(file, fpassword, '\n');
+                getline(file, temp_username, '*');
+                getline(file, temp_email_adress, '*');
+                getline(file, temp_password, '\n');
             }
         }
         file.close();
@@ -140,34 +167,38 @@ public:
 int main()
 {
     Account a1;
-    cout << "Select" << endl;
-    cout << "1. Login" << endl;
-    cout << "2. Register" << endl;
-    cout << "3. Forgot Password" << endl;
-    cout << "4. Exit" << endl;
-    int cas;
-    cin >> cas;
-    switch (cas)
-    {
-    case 1:
-        cin.ignore();
-        obj.login_();
-        break;
-    case 2:
-        cin.ignore();
-        obj.registe();
-        break;
-    case 3:
-        cin.ignore();
-        obj.forgt_passerd();
-        break;
-    case 4:
-        return 0;
-        break;
+    while(true)
+        {
+            cout << "Select" << endl;
+            cout << "1. Login" << endl;
+            cout << "2. Register" << endl;
+            cout << "3. Forgot Password" << endl;
+            cout << "4. Exit" << endl;
+            int cas;
+            cin >> cas;
+            switch (cas)
+            {
+            case 1:
+                cin.ignore();
+                obj.login_function();
+                return 0;
+            case 2:
+                cin.ignore();
+                obj.registe_function();
+                break;
+            case 3:
+                cin.ignore();
+                obj.forgot_password();
+                break;
+            case 4:
+                return 0;
+                break;
 
-    default:
-        cout << "invalid input";
-        break;
-    }
+            default:
+                cout << "invalid input \nTry again" << endl;
+
+                break;
+            }
+        }
     return 0;
 }
