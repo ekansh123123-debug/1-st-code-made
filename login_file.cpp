@@ -133,31 +133,27 @@ public:
     {
         cout << "Enter username : ";
         getline(cin, username);
+
         cout << "Enter email adress : ";
         getline(cin, email_adress);
+
         file.open("loginid.txt", ios ::in);
+        
         while (getline(file, temp_username, '*') &&
                getline(file, temp_email_adress, '*') &&
                getline(file, temp_password, '\n'))
         {
             if (username == temp_username)
             {
-                if (temp_email_adress == email_adress)
-                {
+                if (temp_email_adress == email_adress){
                     cout << "Password is : " << temp_password;
                     break;
                 }
-                else
-                {
-                    cout << "Could not find ...";
+                else{
+                    cout << "username does not match email adress ..." << endl;
+                    cout << "Pleas try again or register " << endl;
                     break;
                 }
-            }
-            else
-            {
-                getline(file, temp_username, '*');
-                getline(file, temp_email_adress, '*');
-                getline(file, temp_password, '\n');
             }
         }
         file.close();
