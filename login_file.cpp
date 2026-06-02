@@ -43,7 +43,8 @@ bool correct_username(const string &username){
 class Account
 {
 private:
-    string password, username, email_adress, temp_username, temp_email_adress, temp_password;
+    string password, username, email_adress;
+    string temp_username, temp_email_adress, temp_password;
     fstream file;
 
 public:
@@ -131,6 +132,7 @@ public:
     }
     void forgot_password()
     {
+
         cout << "Enter username : ";
         getline(cin, username);
 
@@ -138,24 +140,29 @@ public:
         getline(cin, email_adress);
 
         file.open("loginid.txt", ios ::in);
-        
-        while (getline(file, temp_username, '*') &&
-               getline(file, temp_email_adress, '*') &&
-               getline(file, temp_password, '\n'))
-        {
+        if(!file.is_open()){
+            cout << "Errer in opening the file " << endl;
+            cout << "Try to register" << endl;
+            return;
+        }
+
+        while (getline(file, temp_username, '*') && getline(file, temp_email_adress, '*') && getline(file, temp_password, '\n')) {
             if (username == temp_username)
             {
                 if (temp_email_adress == email_adress){
-                    cout << "Password is : " << temp_password;
-                    break;
+                    cout << "Password is : " << temp_password << endl;
+                    file.close();
+                    return;
                 }
                 else{
                     cout << "username does not match email adress ..." << endl;
                     cout << "Pleas try again or register " << endl;
-                    break;
+                    file.close();
+                    return;
                 }
             }
         }
+        cout << "Could not find username\nTry again or register " << endl;
         file.close();
     }
 } obj;
