@@ -29,9 +29,7 @@ bool correct_username(const string &username){
     fstream file;
     string temp_username, temp_email_adress, temp_password;
     file.open("loginid.txt", ios ::in);
-    if (!file.is_open()){
-        return true;
-    }
+    if (file.is_open()){
     while (getline(file, temp_username, '*') && getline(file, temp_email_adress, '*') && getline(file, temp_password, '\n')){
         if (username == temp_username){
             file.close();
@@ -39,6 +37,7 @@ bool correct_username(const string &username){
         }
     }
     file.close();
+    }
     return username.length() > 4;
 }
 class Account
@@ -90,7 +89,7 @@ public:
         {
             cout << "Enter username : ";
             getline(cin, temp_username);
-            if (!correct_username(username))
+            if (!correct_username(temp_username))
             {
                 cout << "This name is already taken or incorrect length" << endl;
                 cout << "Please try another username " << endl;
